@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>brain.os — Your External Memory</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;1,9..144,300&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0e0e0e;--surface:#161616;--surface2:#1e1e1e;--surface3:#252525;
+  --border:#2a2a2a;--border2:#333;
+  --text:#e8e4dc;--text2:#9a9590;--text3:#555;
+  --accent:#c8b89a;--accent2:#7a9e8a;
+  --tag-work:#1a2a20;--tag-work-t:#7abf8e;
+  --tag-personal:#1f1a2e;--tag-personal-t:#9a7abf;
+  --tag-creative:#2e1a1a;--tag-creative-t:#bf9a7a;
+  --wp:#3858e9;--wp-t:#6b82f0;--wp-bg:#13172e;
+  --radius:10px;--radius-lg:16px;
+  --mono:'DM Mono',monospace;
+  --serif:'Fraunces',serif;
+}
+body{font-family:var(--mono);background:var(--bg);color:var(--text);min-height:100vh;font-size:13px;line-height:1.6}
+.app{display:grid;grid-template-columns:220px 1fr;grid-template-rows:56px 1fr;height:100vh;overflow:hidden}
+.topbar{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding:0 20px;border-bottom:1px solid var(--border);background:var(--bg)}
+.logo{font-family:var(--serif);font-size:20px;font-weight:300;color:var(--text)}
+.logo span{color:var(--accent);font-style:italic}
+.topbar-right{display:flex;align-items:center;gap:12px}
+.new-btn{background:var(--accent);color:#0e0e0e;border:none;border-radius:6px;padding:5px 14px;font-family:var(--mono);font-size:12px;cursor:pointer;font-weight:500}
+.new-btn:hover{opacity:.85}
+.sidebar{background:var(--surface);border-right:1px solid var(--border);padding:16px 0;overflow-y:auto;display:flex;flex-direction:column;gap:4px}
+.nav-section{padding:8px 16px 4px;font-size:10px;letter-spacing:.12em;color:var(--text3);text-transform:uppercase}
+.nav-item{display:flex;align-items:center;gap:10px;padding:8px 16px;cursor:pointer;color:var(--text2);transition:all .1s;border-left:2px solid transparent;font-size:12px}
+.nav-item:hover{background:var(--surface2);color:var(--text)}
+.nav-item.active{background:var(--surface2);color:var(--text);border-left-color:var(--accent)}
+.dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.dot-work{background:var(--tag-work-t)}.dot-personal{background:var(--tag-personal-t)}.dot-creative{background:var(--tag-creative-t)}
+.count{margin-left:auto;font-size:10px;background:var(--surface3);border-radius:10px;padding:1px 7px;color:var(--text3)}
+.sidebar-footer{margin-top:auto;border-top:1px solid var(--border);padding:14px 16px;display:flex;flex-direction:column;gap:14px}
+.cfg-label{font-size:10px;text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px}
+.cfg-label.wp{color:var(--wp-t)}
+.cfg-label.claude{color:var(--text3)}
+.sbi{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-family:var(--mono);font-size:11px;outline:none;margin-bottom:5px}
+.sbi::placeholder{color:var(--text3)}
+.sbi:focus{border-color:var(--border2)}
+.sbtn{width:100%;background:none;border:1px solid var(--border);color:var(--text2);border-radius:6px;padding:5px;font-family:var(--mono);font-size:11px;cursor:pointer;transition:all .15s}
+.sbtn:hover{border-color:var(--accent);color:var(--accent)}
+.sbtn.wp:hover{border-color:var(--wp-t);color:var(--wp-t)}
+.sstat{font-size:10px;margin-top:4px;text-align:center;min-height:14px}
+.main{overflow-y:auto;background:var(--bg)}
+.view{display:none;padding:24px}
+.view.active{display:block}
+.view-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;gap:16px;flex-wrap:wrap}
+.view-title{font-family:var(--serif);font-size:26px;font-weight:300;color:var(--text);line-height:1.2}
+.view-title em{font-style:italic;color:var(--accent)}
+.search-bar{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 12px;flex:1;max-width:340px}
+.search-bar input{background:none;border:none;outline:none;color:var(--text);font-family:var(--mono);font-size:12px;width:100%}
+.search-bar input::placeholder{color:var(--text3)}
+.projects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.project-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;cursor:pointer;transition:border-color .15s,background .15s}
+.project-card:hover{border-color:var(--border2);background:var(--surface2)}
+.card-top{display:flex;align-items:center;gap:6px;margin-bottom:12px}
+.tag{font-size:10px;padding:2px 8px;border-radius:4px;letter-spacing:.05em}
+.tag-work{background:var(--tag-work);color:var(--tag-work-t)}
+.tag-personal{background:var(--tag-personal);color:var(--tag-personal-t)}
+.tag-creative{background:var(--tag-creative);color:var(--tag-creative-t)}
+.sdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.s-active{background:#6abf80}.s-paused{background:#bf9a30}.s-dormant{background:var(--text3)}
+.card-title{font-family:var(--serif);font-size:16px;font-weight:300;margin-bottom:6px;color:var(--text);line-height:1.3}
+.card-goal{font-size:11px;color:var(--text2);line-height:1.6;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px}
+.ctag{font-size:10px;color:var(--text3);background:var(--surface3);padding:1px 7px;border-radius:10px}
+.card-bottom{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border);padding-top:12px}
+.card-date{font-size:10px;color:var(--text3)}
+.card-btns{display:flex;gap:6px}
+.ibtn{background:none;border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-family:var(--mono);font-size:10px;color:var(--text2);cursor:pointer;transition:all .1s}
+.ibtn:hover{border-color:var(--border2);color:var(--text);background:var(--surface3)}
+.ibtn.wp{border-color:var(--wp);color:var(--wp-t)}
+.ibtn.wp:hover{background:var(--wp-bg)}
+.sec-label{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:10px}
+.agent-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;height:400px}
+.agent-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.agent-sub{font-size:12px;color:var(--text2)}
+.agent-name{font-family:var(--serif);font-size:15px;color:var(--text)}
+.msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+.msg{max-width:88%;line-height:1.7;font-size:12px}
+.msg-u{align-self:flex-end;background:var(--surface3);border:1px solid var(--border);border-radius:12px 12px 3px 12px;padding:10px 14px;color:var(--text)}
+.msg-a{align-self:flex-start;color:var(--text2)}
+.msg-a strong{color:var(--accent);font-weight:500}
+.agent-foot{padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:8px}
+.ainput{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-family:var(--mono);font-size:12px;outline:none;resize:none;height:38px}
+.ainput:focus{border-color:var(--border2)}
+.sbend{background:var(--accent);color:#0e0e0e;border:none;border-radius:8px;padding:8px 14px;font-family:var(--mono);font-size:12px;cursor:pointer}
+.sbend:hover{opacity:.85}
+.sbend:disabled{opacity:.4;cursor:default}
+.detail-view{display:none}
+.detail-view.open{display:block}
+.back-btn{background:none;border:none;color:var(--text2);font-family:var(--mono);font-size:12px;cursor:pointer;padding:0;margin-bottom:20px;display:flex;align-items:center;gap:6px}
+.back-btn:hover{color:var(--text)}
+.dtop{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:20px;flex-wrap:wrap}
+.dgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+.iblock{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px}
+.iblock h4{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:10px}
+.iblock p{font-size:12px;color:var(--text2);line-height:1.7}
+.nsteps{list-style:none;display:flex;flex-direction:column;gap:6px}
+.nsteps li{font-size:12px;color:var(--text2);display:flex;align-items:flex-start;gap:8px}
+.nsteps li::before{content:'→';color:var(--accent);flex-shrink:0;margin-top:1px}
+.sim-list{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.sim-item{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;cursor:pointer;transition:border-color .15s}
+.sim-item:hover{border-color:var(--accent)}
+.sim-item h5{font-size:12px;color:var(--text);margin-bottom:2px}
+.sim-item p{font-size:11px;color:var(--text3)}
+.cap-ta{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;color:var(--text);font-family:var(--mono);font-size:12px;line-height:1.8;min-height:200px;outline:none;resize:vertical;margin-bottom:14px}
+.cap-ta:focus{border-color:var(--border2)}
+.cap-ta::placeholder{color:var(--text3)}
+.proj-sel{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.proj-sel select{background:var(--surface);border:1px solid var(--border);color:var(--text2);font-family:var(--mono);font-size:12px;padding:7px 12px;border-radius:8px;outline:none;cursor:pointer}
+.proc-btn{background:none;border:1px solid var(--accent);color:var(--accent);border-radius:8px;padding:8px 20px;font-family:var(--mono);font-size:12px;cursor:pointer;transition:all .15s}
+.proc-btn:hover{background:var(--accent);color:#0e0e0e}
+.proc-btn:disabled{opacity:.4;cursor:default}
+.proc-out{background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius);padding:18px;margin-top:16px;font-size:12px;color:var(--text2);line-height:1.8;display:none}
+.proc-out h4{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-bottom:8px;margin-top:16px}
+.proc-out h4:first-child{margin-top:0}
+.proc-out ul{list-style:none;display:flex;flex-direction:column;gap:4px}
+.proc-out ul li::before{content:'·  ';color:var(--accent)}
+.typing::after{content:'▋';animation:blink .7s step-end infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.75);z-index:100;display:none;align-items:center;justify-content:center}
+.overlay.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-lg);padding:28px;width:640px;max-width:95vw;max-height:90vh;overflow-y:auto}
+.modal h3{font-family:var(--serif);font-size:20px;font-weight:300;margin-bottom:4px;color:var(--text)}
+.modal-sub{font-size:11px;color:var(--text3);margin-bottom:20px}
+.frow{margin-bottom:14px}
+.frow label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:6px}
+.frow input,.frow textarea,.frow select{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--text);font-family:var(--mono);font-size:12px;outline:none}
+.frow textarea{resize:vertical;line-height:1.7}
+.frow input:focus,.frow textarea:focus,.frow select:focus{border-color:var(--border2)}
+.frow select option{background:var(--surface2)}
+.modal-acts{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;flex-wrap:wrap}
+.cbtn{background:none;border:1px solid var(--border);color:var(--text2);border-radius:8px;padding:8px 16px;font-family:var(--mono);font-size:12px;cursor:pointer}
+.cbtn:hover{border-color:var(--border2);color:var(--text)}
+.pbtn{background:var(--accent);color:#0e0e0e;border:none;border-radius:8px;padding:8px 20px;font-family:var(--mono);font-size:12px;cursor:pointer;font-weight:500}
+.pbtn:hover{opacity:.85}
+.wpbtn{background:var(--wp);color:#fff;border:none;border-radius:8px;padding:8px 20px;font-family:var(--mono);font-size:12px;cursor:pointer;font-weight:500}
+.wpbtn:hover{opacity:.85}
+.wpbtn:disabled{opacity:.4;cursor:default}
+.wp-status{margin-top:12px;padding:12px 16px;background:var(--surface2);border-radius:8px;font-size:12px;display:none}
+.wp-status a{color:var(--wp-t);text-decoration:none}
+.wp-status a:hover{text-decoration:underline}
+.gen-screen{padding:40px;text-align:center;color:var(--text3);display:none}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="logo"><span>brain</span>.os</div>
+    <div class="topbar-right">
+      <span style="font-size:11px;color:var(--text3)"><span id="proj-count">0</span> projects</span>
+      <span id="wp-pill" style="font-size:11px;color:var(--wp-t);display:none">● wordpress</span>
+      <button class="new-btn" onclick="openNewModal()">+ new project</button>
+    </div>
+  </div>
+
+  <div class="sidebar">
+    <div class="nav-section">Views</div>
+    <div class="nav-item active" onclick="gotoView('projects',this)"><div class="dot" style="background:var(--accent)"></div>all projects <span class="count" id="c-all">0</span></div>
+    <div class="nav-item" onclick="gotoView('capture',this)"><div class="dot" style="background:var(--accent2)"></div>quick capture</div>
+    <div class="nav-section" style="margin-top:8px">Categories</div>
+    <div class="nav-item" onclick="filterCat('work',this)"><div class="dot dot-work"></div>work <span class="count" id="c-work">0</span></div>
+    <div class="nav-item" onclick="filterCat('personal',this)"><div class="dot dot-personal"></div>personal <span class="count" id="c-personal">0</span></div>
+    <div class="nav-item" onclick="filterCat('creative',this)"><div class="dot dot-creative"></div>creative <span class="count" id="c-creative">0</span></div>
+
+    <div class="sidebar-footer">
+      <div>
+        <div class="cfg-label claude">Anthropic API Key</div>
+        <input type="password" class="sbi" id="s-api-key" placeholder="sk-ant-...">
+        <button class="sbtn" onclick="saveApiKey()">save key</button>
+        <div class="sstat" id="key-stat"></div>
+      </div>
+      <div>
+        <div class="cfg-label wp">WordPress.com</div>
+        <input type="text" class="sbi" id="s-wp-site" placeholder="yoursite.wordpress.com">
+        <input type="password" class="sbi" id="s-wp-token" placeholder="access token">
+        <button class="sbtn wp" onclick="saveWp()">save & test</button>
+        <div class="sstat" id="wp-stat"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="view active" id="view-projects">
+      <div class="detail-view" id="dv">
+        <button class="back-btn" onclick="closeDetail()">← back</button>
+        <div id="dc"></div>
+      </div>
+      <div id="plv">
+        <div class="view-header">
+          <div class="view-title" id="vtitle">All <em>projects</em></div>
+          <div class="search-bar">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text3);flex-shrink:0"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input type="text" placeholder="search..." id="search-in" oninput="doSearch(this.value)">
+          </div>
+        </div>
+        <div class="projects-grid" id="pgrid"></div>
+      </div>
+    </div>
+    <div class="view" id="view-capture">
+      <div class="view-header"><div class="view-title">Quick <em>capture</em></div></div>
+      <div class="sec-label">drop notes, meeting transcript, or raw thoughts</div>
+      <textarea class="cap-ta" id="cap-in" placeholder="Paste anything — meeting notes, brain dump, transcript..."></textarea>
+      <div class="proj-sel">
+        <span style="font-size:12px;color:var(--text3)">link to project:</span>
+        <select id="cap-proj"><option value="">— auto-detect —</option></select>
+        <button class="proc-btn" id="proc-btn" onclick="runCapture()">process with AI →</button>
+      </div>
+      <div class="proc-out" id="proc-out"></div>
+    </div>
+  </div>
+</div>
+
+<!-- New Project Modal -->
+<div class="overlay" id="m-new">
+  <div class="modal">
+    <h3>New <em style="font-style:italic;color:var(--accent)">project</em></h3>
+    <div class="frow"><label>Project name</label><input type="text" id="n-name" placeholder="e.g. Mesa Verde article"></div>
+    <div class="frow"><label>Category</label><select id="n-cat"><option value="work">work</option><option value="personal">personal</option><option value="creative">creative</option></select></div>
+    <div class="frow"><label>Goal</label><textarea id="n-goal" placeholder="What does done look like?" style="min-height:60px"></textarea></div>
+    <div class="frow"><label>Status</label><select id="n-status"><option value="active">active</option><option value="paused">paused</option><option value="dormant">dormant</option></select></div>
+    <div class="frow"><label>Tags (comma-separated)</label><input type="text" id="n-tags" placeholder="writing, research, outdoors"></div>
+    <div class="frow"><label>Notes / where you left off</label><textarea id="n-notes" style="min-height:60px" placeholder="Anything you want to remember..."></textarea></div>
+    <div class="modal-acts">
+      <button class="cbtn" onclick="closeNewModal()">cancel</button>
+      <button class="pbtn" onclick="saveNewProject()">save project</button>
+    </div>
+  </div>
+</div>
+
+<!-- WordPress Draft Modal -->
+<div class="overlay" id="m-wp">
+  <div class="modal">
+    <h3>Send to <em style="color:var(--wp-t);font-style:italic">WordPress</em></h3>
+    <div class="modal-sub" id="wp-sub">Generating your post draft...</div>
+    <div class="gen-screen" id="wp-gen"><span class="typing" style="font-size:16px"></span><div style="margin-top:14px;font-size:12px">drafting post with AI...</div></div>
+    <div id="wp-fc">
+      <div class="frow"><label>Post title</label><input type="text" id="wp-title"></div>
+      <div class="frow"><label>Post type</label><select id="wp-type"><option value="post">blog post</option><option value="page">page</option></select></div>
+      <div class="frow"><label>Tags</label><input type="text" id="wp-tags"></div>
+      <div class="frow"><label>Content (HTML — edit freely before sending)</label><textarea id="wp-content" style="min-height:260px;font-size:11px;line-height:1.6"></textarea></div>
+    </div>
+    <div class="wp-status" id="wp-result"></div>
+    <div class="modal-acts">
+      <button class="cbtn" onclick="closeWpModal()">cancel</button>
+      <button class="cbtn" id="wp-regen" onclick="regenDraft()">↺ regenerate</button>
+      <button class="wpbtn" id="wp-send" onclick="publishDraft()">→ send as draft</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API_URL="https://api.anthropic.com/v1/messages",MODEL="claude-sonnet-4-20250514";
+const WP_API="https://public-api.wordpress.com/rest/v1.1/sites/";
+let currentWpId=null;
+
+const gk=()=>localStorage.getItem('b_apikey')||'';
+const gs=()=>localStorage.getItem('b_wpsite')||'';
+const gt=()=>localStorage.getItem('b_wptoken')||'';
+
+function saveApiKey(){
+  const k=document.getElementById('s-api-key').value.trim();
+  if(!k)return;
+  localStorage.setItem('b_apikey',k);
+  stat('key-stat','✓ saved','var(--tag-work-t)');
+}
+
+async function saveWp(){
+  const s=document.getElementById('s-wp-site').value.trim().replace(/^https?:\/\//,'').replace(/\/$/,'');
+  const t=document.getElementById('s-wp-token').value.trim();
+  if(!s||!t){stat('wp-stat','enter both fields','#bf9a30');return;}
+  localStorage.setItem('b_wpsite',s);localStorage.setItem('b_wptoken',t);
+  stat('wp-stat','testing...','var(--text3)');
+  try{
+    const r=await fetch(`${WP_API}${encodeURIComponent(s)}`,{headers:{'Authorization':`Bearer ${t}`}});
+    const d=await r.json();
+    if(d.ID||d.name){
+      stat('wp-stat',`✓ ${d.name||s}`,'var(--tag-work-t)');
+      document.getElementById('wp-pill').style.display='inline';
+    } else {
+      stat('wp-stat',d.message||'failed','#bf3a3a');
+    }
+  }catch(e){stat('wp-stat',e.message,'#bf3a3a');}
+}
+
+function stat(id,msg,col){const el=document.getElementById(id);el.textContent=msg;el.style.color=col;}
+
+const DEFAULTS=[
+  {id:1,name:"2026 Hiking Season Plan",cat:"personal",status:"active",goal:"Map out 8 major hikes for the year, gear list, permits, training plan",tags:["outdoors","planning","fitness"],notes:"Humphreys Peak and Grand Canyon R2R on the list. Need to check permit windows.",steps:["Check Grand Canyon R2R permit dates","Research Kachina Trail conditions","Book Humphreys Peak campsite"],updated:"2026-05-12",wpId:null},
+  {id:2,name:"Client Proposal — Watershed Restoration",cat:"work",status:"active",goal:"Write and submit full proposal for Coconino County watershed project",tags:["writing","proposal","environmental"],notes:"Have the site survey data. Need exec summary and budget section. Reuse Verde River methodology.",steps:["Draft executive summary","Pull budget template from Verde River proposal","Review county submission requirements"],updated:"2026-05-15",wpId:null},
+  {id:3,name:"Short Story: 'The Cartographer'",cat:"creative",status:"paused",goal:"Finish first draft of a short story about a map-maker in the 1800s Southwest",tags:["fiction","writing","southwest"],notes:"First 3 scenes done. Stuck on the midpoint — protagonist needs a reason to cross into unmapped territory.",steps:["Resolve midpoint motivation","Research 1880s Arizona cartography","Write scenes 4-5"],updated:"2026-03-08",wpId:null},
+  {id:4,name:"Home Office Refresh",cat:"personal",status:"paused",goal:"Reorganize workspace for better focus — desk layout, lighting, plants",tags:["home","focus","diy"],notes:"Decided on a standing desk converter. Still researching monitor arms.",steps:["Order standing desk converter","Measure wall for shelving","Pick up grow light"],updated:"2026-04-20",wpId:null},
+  {id:5,name:"Field Notes Series",cat:"creative",status:"active",goal:"Illustrated field-note essays about the Colorado Plateau",tags:["writing","nonfiction","southwest","nature"],notes:"Three essays drafted: Painted Desert, Marble Canyon, Cedar Mesa. Voice is working. Need a home for this — magazine or self-pub?",steps:["Draft essay 4: Monument Valley","Research Terrain and High Desert Journal","Commission or create maps"],updated:"2026-05-17",wpId:null}
+];
+
+let projs=JSON.parse(localStorage.getItem('b_projs')||'null')||DEFAULTS;
+let curFilter='all',curSearch='';
+const save=()=>localStorage.setItem('b_projs',JSON.stringify(projs));
+
+function render(){
+  const filtered=projs.filter(p=>{
+    const mc=curFilter==='all'||p.cat===curFilter;
+    const ms=!curSearch||p.name.toLowerCase().includes(curSearch)||(p.tags||[]).join(' ').toLowerCase().includes(curSearch)||(p.notes||'').toLowerCase().includes(curSearch);
+    return mc&&ms;
+  });
+  ['all','work','personal','creative'].forEach(c=>{
+    document.getElementById('c-'+c).textContent=c==='all'?projs.length:projs.filter(p=>p.cat===c).length;
+  });
+  document.getElementById('proj-count').textContent=projs.length;
+  document.getElementById('cap-proj').innerHTML='<option value="">— auto-detect —</option>'+projs.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
+  if(gs()&&gt())document.getElementById('wp-pill').style.display='inline';
+  if(gk())stat('key-stat','✓ key loaded','var(--tag-work-t)');
+  const wpConnected=!!gt();
+  if(!filtered.length){document.getElementById('pgrid').innerHTML='<div style="color:var(--text3);padding:40px;text-align:center;grid-column:1/-1">no projects found</div>';return;}
+  document.getElementById('pgrid').innerHTML=filtered.map(p=>`
+    <div class="project-card" onclick="openDetail(${p.id})">
+      <div class="card-top">
+        <div class="sdot s-${p.status}"></div>
+        <span class="tag tag-${p.cat}">${p.cat}</span>
+        ${p.wpId?`<span style="font-size:10px;color:var(--wp-t);margin-left:auto">● wp</span>`:''}
+      </div>
+      <div class="card-title">${p.name}</div>
+      <div class="card-goal">${p.goal}</div>
+      ${p.tags.length?`<div class="card-tags">${p.tags.map(t=>`<span class="ctag">${t}</span>`).join('')}</div>`:''}
+      <div class="card-bottom">
+        <span class="card-date">${fmtDate(p.updated)}</span>
+        <div class="card-btns">
+          <button class="ibtn" onclick="event.stopPropagation();openChat(${p.id})">ask ai</button>
+          ${wpConnected?`<button class="ibtn wp" onclick="event.stopPropagation();openWpModal(${p.id})">→ wp</button>`:''}
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function fmtDate(d){
+  const diff=Math.floor((Date.now()-new Date(d))/(864e5));
+  return diff===0?'today':diff===1?'yesterday':diff<7?diff+'d ago':diff<30?Math.floor(diff/7)+'w ago':Math.floor(diff/30)+'mo ago';
+}
+
+function openDetail(id){
+  const p=projs.find(x=>x.id===id);if(!p)return;
+  const sim=projs.filter(x=>x.id!==p.id).map(x=>{
+    const ov=x.tags.filter(t=>p.tags.includes(t));
+    if(ov.length||x.cat===p.cat)return{...x,ov:ov.length?`shared: ${ov.join(', ')}`:'same category'};
+    return null;
+  }).filter(Boolean).slice(0,3);
+  const wpOk=!!gt();
+  document.getElementById('dc').innerHTML=`
+    <div class="dtop">
+      <div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+          <span class="tag tag-${p.cat}">${p.cat}</span>
+          <div class="sdot s-${p.status}"></div>
+          <span style="font-size:11px;color:var(--text3)">${p.status}</span>
+          ${p.wpId?`<span style="font-size:11px;color:var(--wp-t)">● on wordpress</span>`:''}
+        </div>
+        <div class="view-title">${p.name}</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="ibtn" onclick="openChat(${p.id})">ask ai</button>
+        ${wpOk?`<button class="ibtn wp" style="padding:6px 14px;font-size:11px" onclick="openWpModal(${p.id})">→ send to wordpress</button>`:''}
+      </div>
+    </div>
+    <div class="dgrid">
+      <div class="iblock"><h4>goal</h4><p>${p.goal}</p></div>
+      <div class="iblock"><h4>where you left off</h4><p>${p.notes||'No notes yet.'}</p></div>
+      ${p.steps&&p.steps.length?`<div class="iblock"><h4>next steps</h4><ul class="nsteps">${p.steps.map(s=>`<li>${s}</li>`).join('')}</ul></div>`:''}
+      ${p.tags.length?`<div class="iblock"><h4>tags</h4><div class="card-tags" style="margin-top:4px">${p.tags.map(t=>`<span class="ctag">${t}</span>`).join('')}</div><div style="margin-top:10px;font-size:11px;color:var(--text3)">updated ${fmtDate(p.updated)}</div></div>`:''}
+    </div>
+    ${sim.length?`<div class="sec-label">similar projects</div><div class="sim-list">${sim.map(s=>`<div class="sim-item" onclick="openDetail(${s.id})"><h5>${s.name}</h5><p>${s.ov} — ${fmtDate(s.updated)}</p></div>`).join('')}</div>`:''}
+    <div class="sec-label" style="margin-bottom:10px">project agent</div>
+    <div class="agent-wrap">
+      <div class="agent-head">
+        <div><div class="agent-sub">context-aware assistant</div><div class="agent-name">${p.name}</div></div>
+        <span style="font-size:10px;color:var(--text3)">knows your project</span>
+      </div>
+      <div class="msgs" id="msgs-${p.id}">
+        <div class="msg msg-a"><strong>Ready.</strong> I know this project inside out. Ask me where you left off, what to tackle next, or to draft something.</div>
+      </div>
+      <div class="agent-foot">
+        <textarea class="ainput" id="ai-${p.id}" placeholder="where did I leave off? / what should I do next?" onkeydown="ck(event,${p.id})"></textarea>
+        <button class="sbend" id="sb-${p.id}" onclick="chat(${p.id})">send</button>
+      </div>
+    </div>`;
+  document.getElementById('dv').classList.add('open');
+  document.getElementById('plv').style.display='none';
+}
+
+function closeDetail(){document.getElementById('dv').classList.remove('open');document.getElementById('plv').style.display='';}
+function openChat(id){openDetail(id);setTimeout(()=>{const el=document.getElementById('ai-'+id);if(el)el.focus();},80);}
+function ck(e,id){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();chat(id);}}
+
+async function chat(id){
+  const p=projs.find(x=>x.id===id);if(!p)return;
+  const k=gk();if(!k){alert('Add Anthropic API key in sidebar.');return;}
+  const inp=document.getElementById('ai-'+id),sb=document.getElementById('sb-'+id),mc=document.getElementById('msgs-'+id);
+  const txt=inp.value.trim();if(!txt)return;
+  inp.value='';sb.disabled=true;
+  const um=document.createElement('div');um.className='msg msg-u';um.textContent=txt;mc.appendChild(um);
+  const am=document.createElement('div');am.className='msg msg-a';am.innerHTML='<span class="typing"></span>';mc.appendChild(am);
+  mc.scrollTop=mc.scrollHeight;
+  try{
+    const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json','x-api-key':k,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-api-access-insecure-unauthenticated-by-design-do-not-use-in-production':'true'},
+      body:JSON.stringify({model:MODEL,max_tokens:1000,
+        system:`You are a project assistant. PROJECT: ${p.name} | CAT: ${p.cat} | STATUS: ${p.status} | GOAL: ${p.goal} | WHERE LEFT OFF: ${p.notes||'none'} | NEXT STEPS: ${p.steps?.join('; ')||'none'} | TAGS: ${p.tags.join(', ')} | UPDATED: ${p.updated}. Be concise, specific, reference actual project details.`,
+        messages:[{role:'user',content:txt}]})});
+    const d=await r.json();
+    am.innerHTML=(d.content?.[0]?.text||'no response').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+  }catch(e){am.innerHTML=`<span style="color:var(--text3)">${e.message}</span>`;}
+  sb.disabled=false;mc.scrollTop=mc.scrollHeight;
+}
+
+// ── WordPress ────────────────────────────────────────────────────
+
+async function openWpModal(id){
+  currentWpId=id;
+  const p=projs.find(x=>x.id===id);if(!p)return;
+  document.getElementById('m-wp').classList.add('open');
+  document.getElementById('wp-fc').style.display='none';
+  document.getElementById('wp-gen').style.display='block';
+  document.getElementById('wp-result').style.display='none';
+  document.getElementById('wp-send').disabled=false;
+  document.getElementById('wp-send').textContent='→ send as draft';
+  document.getElementById('wp-sub').textContent=`Drafting a post from "${p.name}"...`;
+  await genDraft(p);
+}
+
+async function genDraft(p){
+  document.getElementById('wp-gen').style.display='block';
+  document.getElementById('wp-fc').style.display='none';
+  const k=gk();
+  if(!k){
+    document.getElementById('wp-title').value=p.name;
+    document.getElementById('wp-tags').value=p.tags.join(', ');
+    document.getElementById('wp-content').value=`<h2>${p.goal}</h2>\n<p>${p.notes||''}</p>`;
+    document.getElementById('wp-sub').textContent='No API key — prefilled with project data.';
+    document.getElementById('wp-gen').style.display='none';
+    document.getElementById('wp-fc').style.display='block';
+    return;
+  }
+  try{
+    const r=await fetch(API_URL,{method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':k,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-api-access-insecure-unauthenticated-by-design-do-not-use-in-production':'true'},
+      body:JSON.stringify({model:MODEL,max_tokens:2000,
+        system:`Transform a project into an engaging blog post draft in clean HTML. Rules: use only <h2><h3><p><ul><li><strong><em><blockquote>. No divs, no styles, no classes. Write in first person. 300-600 words. Feel genuine, not like a status update. Return ONLY:
+<title>post title</title>
+<content>html body</content>`,
+        messages:[{role:'user',content:`Project: ${p.name}\nCategory: ${p.cat}\nGoal: ${p.goal}\nNotes: ${p.notes||'none'}\nNext Steps: ${p.steps?.join(', ')||'none'}\nTags: ${p.tags.join(', ')}\n\nWrite an engaging post from this.`}]})});
+    const d=await r.json();
+    const raw=d.content?.[0]?.text||'';
+    const title=(raw.match(/<title>(.*?)<\/title>/s)||[])[1]?.trim()||p.name;
+    const content=(raw.match(/<content>(.*?)<\/content>/s)||[])[1]?.trim()||`<p>${p.notes||p.goal}</p>`;
+    document.getElementById('wp-title').value=title;
+    document.getElementById('wp-tags').value=p.tags.join(', ');
+    document.getElementById('wp-content').value=content;
+    document.getElementById('wp-sub').textContent='Review and edit, then send as a WordPress draft.';
+  }catch(e){
+    document.getElementById('wp-title').value=p.name;
+    document.getElementById('wp-tags').value=p.tags.join(', ');
+    document.getElementById('wp-content').value=`<h2>${p.goal}</h2>\n<p>${p.notes||''}</p>`;
+    document.getElementById('wp-sub').textContent='AI draft failed — filled with project data. Edit freely.';
+  }
+  document.getElementById('wp-gen').style.display='none';
+  document.getElementById('wp-fc').style.display='block';
+}
+
+async function regenDraft(){
+  const p=projs.find(x=>x.id===currentWpId);if(!p)return;
+  await genDraft(p);
+}
+
+async function publishDraft(){
+  const tok=gt(),site=gs();
+  if(!tok||!site){alert('Add WordPress site and token in the sidebar.');return;}
+  const title=document.getElementById('wp-title').value.trim();
+  const content=document.getElementById('wp-content').value.trim();
+  const tags=document.getElementById('wp-tags').value.split(',').map(t=>t.trim()).filter(Boolean);
+  const type=document.getElementById('wp-type').value;
+  if(!title||!content){alert('Title and content required.');return;}
+  const btn=document.getElementById('wp-send');btn.disabled=true;btn.textContent='sending...';
+  const res=document.getElementById('wp-result');res.style.display='block';res.style.color='var(--text3)';res.textContent='Connecting to WordPress...';
+  try{
+    const r=await fetch(`${WP_API}${encodeURIComponent(site)}/posts/new`,{
+      method:'POST',
+      headers:{'Authorization':`Bearer ${tok}`,'Content-Type':'application/json'},
+      body:JSON.stringify({title,content,status:'draft',tags:tags.join(','),type})
+    });
+    const d=await r.json();
+    if(d.ID){
+      res.style.color='var(--tag-work-t)';
+      res.innerHTML=`✓ Draft created! <a href="${d.URL||'#'}" target="_blank">open in WordPress →</a>`;
+      btn.textContent='✓ sent';
+      const p=projs.find(x=>x.id===currentWpId);
+      if(p){p.wpId=d.ID;p.updated=new Date().toISOString().split('T')[0];save();render();}
+    } else {
+      res.style.color='#bf3a3a';res.textContent='Error: '+(d.message||JSON.stringify(d));
+      btn.disabled=false;btn.textContent='→ send as draft';
+    }
+  }catch(e){
+    res.style.color='#bf3a3a';res.textContent='Error: '+e.message;
+    btn.disabled=false;btn.textContent='→ send as draft';
+  }
+}
+
+function closeWpModal(){document.getElementById('m-wp').classList.remove('open');currentWpId=null;}
+
+// ── Capture ──────────────────────────────────────────────────────
+async function runCapture(){
+  const input=document.getElementById('cap-in').value.trim();if(!input)return;
+  const k=gk();if(!k){alert('Add Anthropic API key in sidebar.');return;}
+  const btn=document.getElementById('proc-btn'),out=document.getElementById('proc-out');
+  const pid=document.getElementById('cap-proj').value;
+  const lp=pid?projs.find(p=>p.id==pid):null;
+  btn.disabled=true;btn.textContent='processing...';out.style.display='block';out.innerHTML='<span class="typing"></span>';
+  try{
+    const r=await fetch(API_URL,{method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':k,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-api-access-insecure-unauthenticated-by-design-do-not-use-in-production':'true'},
+      body:JSON.stringify({model:MODEL,max_tokens:1000,
+        system:`Extract structured info from raw notes. Return ONLY:
+<summary>2-3 sentences</summary>
+<decisions>bullets or "none"</decisions>
+<actions>bullets or "none"</actions>
+<questions>open questions or "none"</questions>
+<project_link>match to one of: ${projs.map(p=>p.name).join(', ')} — or "new project"</project_link>
+${lp?`Linked project context: "${lp.name}" — ${lp.goal}`:''}`,
+        messages:[{role:'user',content:input}]})});
+    const d=await r.json();
+    const raw=d.content?.[0]?.text||'';
+    const ex=tag=>(raw.match(new RegExp(`<${tag}>(.*?)<\\/${tag}>`,'s'))||[])[1]?.trim()||'';
+    const [sum,dec,act,qs,link]=['summary','decisions','actions','questions','project_link'].map(ex);
+    out.innerHTML=`
+      ${sum?`<h4>summary</h4><p>${sum}</p>`:''}
+      ${act&&act!=='none'?`<h4>action items</h4><ul>${act.split('\n').filter(l=>l.trim()&&l!=='none').map(l=>`<li>${l.replace(/^[-•*]\s*/,'')}</li>`).join('')}</ul>`:''}
+      ${dec&&dec!=='none'?`<h4>decisions</h4><ul>${dec.split('\n').filter(l=>l.trim()&&l!=='none').map(l=>`<li>${l.replace(/^[-•*]\s*/,'')}</li>`).join('')}</ul>`:''}
+      ${qs&&qs!=='none'?`<h4>open questions</h4><ul>${qs.split('\n').filter(l=>l.trim()&&l!=='none').map(l=>`<li>${l.replace(/^[-•*]\s*/,'')}</li>`).join('')}</ul>`:''}
+      ${link?`<h4>suggested project</h4><p style="color:var(--accent)">${link}</p>`:''}`;
+  }catch(e){out.innerHTML=`<span style="color:var(--text3)">${e.message}</span>`;}
+  btn.disabled=false;btn.textContent='process with AI →';
+}
+
+// ── Nav ──────────────────────────────────────────────────────────
+function gotoView(id,el){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('view-'+id).classList.add('active');
+  if(el)el.classList.add('active');
+  if(id==='projects')render();
+}
+function filterCat(cat,el){
+  curFilter=cat;
+  document.getElementById('vtitle').innerHTML=`${cat[0].toUpperCase()+cat.slice(1)} <em>projects</em>`;
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  if(el)el.classList.add('active');
+  closeDetail();render();
+  if(!document.getElementById('view-projects').classList.contains('active'))gotoView('projects',null);
+}
+function doSearch(v){curSearch=v.toLowerCase();render();}
+function openNewModal(){document.getElementById('m-new').classList.add('open');}
+function closeNewModal(){document.getElementById('m-new').classList.remove('open');}
+function saveNewProject(){
+  const name=document.getElementById('n-name').value.trim();if(!name)return;
+  const tags=document.getElementById('n-tags').value.split(',').map(t=>t.trim()).filter(Boolean);
+  projs.unshift({id:Date.now(),name,cat:document.getElementById('n-cat').value,status:document.getElementById('n-status').value,goal:document.getElementById('n-goal').value.trim()||'No goal set.',tags,notes:document.getElementById('n-notes').value.trim(),steps:[],updated:new Date().toISOString().split('T')[0],wpId:null});
+  save();closeNewModal();
+  ['n-name','n-goal','n-notes','n-tags'].forEach(id=>document.getElementById(id).value='');
+  render();
+}
+document.getElementById('m-new').addEventListener('click',e=>{if(e.target===e.currentTarget)closeNewModal();});
+document.getElementById('m-wp').addEventListener('click',e=>{if(e.target===e.currentTarget)closeWpModal();});
+
+render();
+</script>
+</body>
+</html>
