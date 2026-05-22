@@ -618,15 +618,18 @@ function renderTodayTasks(){
   const tasksTodayCount=document.getElementById('tasks-today-count');
   let filtered=[];
   if(selectedList==='today'){
-} else {
-    filtered=tasks.filter(t=>!t.done&&t.listTitle===selectedList);
+    filtered=tasks.filter(t=>!t.done&&t.due===todayStr);
   } else {
-    filtered=tasks.filter(t=>!t.done&&t.listId===selectedList);
+    filtered=tasks.filter(t=>!t.done&&t.listTitle===selectedList);
   }
-  if(filtered.length===0){tasksTodayList.innerHTML='<div class="empty-msg">Nothing here</div>';tasksTodayCount.textContent='';}
-  else{tasksTodayCount.textContent=filtered.length;tasksTodayList.innerHTML=filtered.map(t=>renderTaskItem(t)).join('');}
+  if(filtered.length===0){
+    tasksTodayList.innerHTML='<div class="empty-msg">Nothing here</div>';
+    tasksTodayCount.textContent='';
+  } else {
+    tasksTodayCount.textContent=filtered.length;
+    tasksTodayList.innerHTML=filtered.map(t=>renderTaskItem(t)).join('');
+  }
 }
-
 function renderTodayView(){
   const todayStr=localToday();
   const calList=document.getElementById('cal-list');
