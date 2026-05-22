@@ -615,7 +615,8 @@ function renderTodayTasks(){
   const sel=document.getElementById('task-list-selector');
   const selectedList=sel?sel.value:'today';
   const tasksTodayList=document.getElementById('tasks-today-list');
-  const tasksTodayCount=document.getElementById('tasks-today-count');
+ const tasksTodayCount=document.getElementById('tasks-today-count');
+  if(!tasksTodayCount)return;
   let filtered=[];
   if(selectedList==='today'){
     filtered=tasks.filter(t=>!t.done&&t.due===todayStr);
