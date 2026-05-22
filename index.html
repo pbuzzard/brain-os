@@ -116,7 +116,7 @@ body{font-family:var(--mono);background:var(--bg);color:var(--text);min-height:1
 .today-capture{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;margin-top:4px}
 .today-capture h3{font-family:var(--serif);font-size:16px;font-weight:300;color:var(--text);margin-bottom:12px}
 .cap-row{display:flex;gap:8px;margin-bottom:10px}
-.cap-input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-family:var(--mono);font-size:12px;outline:none;resize:none;min-height:140px;caret-color:var(--accent)}
+.cap-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-family:var(--mono);font-size:12px;outline:none;resize:vertical;min-height:140px;caret-color:var(--accent)}
 .cap-input::placeholder{color:var(--text3)}
 .cap-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .cap-proj-sel{background:var(--surface2);border:1px solid var(--border);color:var(--text2);font-family:var(--mono);font-size:11px;padding:5px 10px;border-radius:6px;outline:none;cursor:pointer}
@@ -301,7 +301,7 @@ body{font-family:var(--mono);background:var(--bg);color:var(--text);min-height:1
       </div>
       <div class="today-grid">
         <div class="today-col">
-          <h3>Calendar <span id="cal-count"></span></h3>
+          <h3>Calendar</h3>
           <div id="cal-list"><div class="empty-msg">Connect Google to see your calendar</div></div>
         </div>
         <div class="today-col">
@@ -564,10 +564,10 @@ async function loadGoogleTasks(){
       const sel=document.getElementById('task-list-selector');
       if(sel){
         const existing=Array.from(sel.options).map(o=>o.value);
-        lists.forEach(list=>{
-          if(!existing.includes(list.id)){
+ lists.forEach(list=>{
+          if(!existing.includes(list.title)){
             const opt=document.createElement('option');
-            opt.value=list.id;opt.textContent=list.title;
+            opt.value=list.title;opt.textContent=list.title;
             sel.appendChild(opt);
           }
         });
@@ -615,7 +615,8 @@ function renderTodayTasks(){
   const tasksTodayCount=document.getElementById('tasks-today-count');
   let filtered=[];
   if(selectedList==='today'){
-    filtered=tasks.filter(t=>!t.done&&t.due===todayStr);
+} else {
+    filtered=tasks.filter(t=>!t.done&&t.listTitle===selectedList);
   } else {
     filtered=tasks.filter(t=>!t.done&&t.listId===selectedList);
   }
