@@ -815,6 +815,19 @@ document.getElementById('m-wp').addEventListener('click',e=>{if(e.target===e.cur
 document.getElementById('m-task').addEventListener('click',e=>{if(e.target===e.currentTarget)closeTaskModal();});
 render();renderTodayView();renderAllTasks();
 if(ghu()&&ght()){syncFromGitHub();}else{setSyncState('','local only');}
+  function archiveProject(id){
+  const p=projs.find(x=>x.id===id);if(!p)return;
+  p.status='dormant';p.updated=new Date().toISOString().split('T')[0];
+  save();closeDetail();render();
+  showToast('Project archived','ok');
+}
+
+function deleteProject(id){
+  if(!confirm('Delete this project? This cannot be undone.'))return;
+  projs=projs.filter(x=>x.id!==id);
+  save();closeDetail();render();
+  showToast('Project deleted','ok');
+}
 </script>
 </body>
 </html>
