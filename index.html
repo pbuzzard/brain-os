@@ -637,14 +637,13 @@ function renderTodayView(){
   const calList=document.getElementById('cal-list');
   if(!googleToken){calList.innerHTML='<div class="empty-msg">Connect Google to see your calendar</div>';}
   else if(calendarEvents.length===0){calList.innerHTML='<div class="empty-msg">No events today 🎉</div>';}
-  elsecalList.innerHTML=calendarEvents.map(e=>`<div class="event-item"><div class="event-time">${fmtCalTime(e)}</div><div class="event-title">${e.summary||'(no title)'}</div>${e.location?`<div class="event-cal">${e.location}</div>`:''}</div>`).join('');}
-renderTodayTasks();
+  else{calList.innerHTML=calendarEvents.map(e=>`<div class="event-item"><div class="event-time">${fmtCalTime(e)}</div><div class="event-title">${e.summary||'(no title)'}</div>${e.location?`<div class="event-cal">${e.location}</div>`:''}</div>`).join('');}
+  renderTodayTasks();
   const d=new Date();
   document.getElementById('today-title').innerHTML=`${d.toLocaleDateString([],{weekday:'long'})} <em>${d.toLocaleDateString([],{month:'long',day:'numeric'})}</em>`;
-  // populate capture project select
   document.getElementById('today-cap-proj').innerHTML='<option value="">— auto-detect —</option>'+projs.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
 }
-// ── Quick Capture (Today) ────────────────────────────────────────
+// ── Quick Capture (Today)
 async function runTodayCapture(){
   const input=document.getElementById('today-cap-input').value.trim();
   if(!input)return;
