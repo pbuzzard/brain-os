@@ -116,8 +116,7 @@ body{font-family:var(--mono);background:var(--bg);color:var(--text);min-height:1
 .today-capture{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;margin-top:4px}
 .today-capture h3{font-family:var(--serif);font-size:16px;font-weight:300;color:var(--text);margin-bottom:12px}
 .cap-row{display:flex;gap:8px;margin-bottom:10px}
-.cap-input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-family:var(--mono);font-size:12px;outline:none;resize:none;min-height:70px;caret-color:var(--accent)}
-.cap-input:focus{border-color:var(--border2)}
+.cap-input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-family:var(--mono);font-size:12px;outline:none;resize:none;min-height:140px;caret-color:var(--accent)}
 .cap-input::placeholder{color:var(--text3)}
 .cap-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .cap-proj-sel{background:var(--surface2);border:1px solid var(--border);color:var(--text2);font-family:var(--mono);font-size:11px;padding:5px 10px;border-radius:6px;outline:none;cursor:pointer}
@@ -306,8 +305,13 @@ body{font-family:var(--mono);background:var(--bg);color:var(--text);min-height:1
           <div id="cal-list"><div class="empty-msg">Connect Google to see your calendar</div></div>
         </div>
         <div class="today-col">
-          <h3>Tasks due today <span id="tasks-today-count"></span></h3>
-          <div id="tasks-today-list"><div class="empty-msg">No tasks due today</div></div>
+          <h3>
+  <select id="task-list-selector" onchange="renderTodayTasks()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text2);font-family:var(--mono);font-size:12px;padding:3px 8px;border-radius:6px;outline:none;cursor:pointer;font-weight:300">
+    <option value="today">due today</option>
+  </select>
+  <span id="tasks-today-count"></span>
+</h3>
+<div id="tasks-today-list"><div class="empty-msg">No tasks due today</div></div>
         </div>
       </div>
       <!-- Quick Capture on Today -->
@@ -544,18 +548,30 @@ async function loadGoogleTasks(){
       let added=0;
       googleTasks.forEach(gt=>{
         const alreadyExists=tasks.find(t=>t.googleId===gt.id);
-        if(!alreadyExists&&gt.title){
+      if(!alreadyExists&&gt.title){
           tasks.unshift({
             id:Date.now()+Math.random(),googleId:gt.id,
             text:gt.title,done:false,
             due:gt.due?gt.due.split('T')[0]:null,
             projectId:null,notes:gt.notes||'',
             created:new Date().toISOString().split('T')[0],
-            fromGoogle:true,listTitle:gt.listTitle
+            fromGoogle:true,listTitle:gt.listTitle,listId:gt.listId
           });
           added++;
         }
       });
+      // Populate task list dropdown with Google lists
+      const sel=document.getElementById('task-list-selector');
+      if(sel){
+        const existing=Array.from(sel.options).map(o=>o.value);
+        lists.forEach(list=>{
+          if(!existing.includes(list.id)){
+            const opt=document.createElement('option');
+            opt.value=list.id;opt.textContent=list.title;
+            sel.appendChild(opt);
+          }
+        });
+      }
       if(added>0){saveTasks();renderAllTasks();renderTodayView();showToast(`Imported ${added} task${added>1?'s':''} from Google ✓`,'ok');}
     },500);
   }catch(e){console.error('Tasks error:',e);}
@@ -591,6 +607,22 @@ function saveTasks(dirty=true){localStorage.setItem('b_tasks',JSON.stringify(tas
 function saveInbox(dirty=true){localStorage.setItem('b_inbox',JSON.stringify(inbox));if(dirty)markDirty();}
 
 // ── Today View ───────────────────────────────────────────────────
+function renderTodayTasks(){
+  const todayStr=localToday();
+  const sel=document.getElementById('task-list-selector');
+  const selectedList=sel?sel.value:'today';
+  const tasksTodayList=document.getElementById('tasks-today-list');
+  const tasksTodayCount=document.getElementById('tasks-today-count');
+  let filtered=[];
+  if(selectedList==='today'){
+    filtered=tasks.filter(t=>!t.done&&t.due===todayStr);
+  } else {
+    filtered=tasks.filter(t=>!t.done&&t.listId===selectedList);
+  }
+  if(filtered.length===0){tasksTodayList.innerHTML='<div class="empty-msg">Nothing here</div>';tasksTodayCount.textContent='';}
+  else{tasksTodayCount.textContent=filtered.length;tasksTodayList.innerHTML=filtered.map(t=>renderTaskItem(t)).join('');}
+}
+
 function renderTodayView(){
   const todayStr=localToday();
   const calList=document.getElementById('cal-list');
@@ -598,11 +630,7 @@ function renderTodayView(){
   if(!googleToken){calList.innerHTML='<div class="empty-msg">Connect Google to see your calendar</div>';calCount.textContent='';}
   else if(calendarEvents.length===0){calList.innerHTML='<div class="empty-msg">No events today 🎉</div>';calCount.textContent='';}
   else{calCount.textContent=calendarEvents.length;calList.innerHTML=calendarEvents.map(e=>`<div class="event-item"><div class="event-time">${fmtCalTime(e)}</div><div class="event-title">${e.summary||'(no title)'}</div>${e.location?`<div class="event-cal">${e.location}</div>`:''}</div>`).join('');}
-  const todayTasks=tasks.filter(t=>!t.done&&t.due===todayStr);
-  const tasksTodayList=document.getElementById('tasks-today-list');
-  const tasksTodayCount=document.getElementById('tasks-today-count');
-  if(todayTasks.length===0){tasksTodayList.innerHTML='<div class="empty-msg">No tasks due today</div>';tasksTodayCount.textContent='';}
-  else{tasksTodayCount.textContent=todayTasks.length;tasksTodayList.innerHTML=todayTasks.map(t=>renderTaskItem(t)).join('');}
+renderTodayTasks();
   const d=new Date();
   document.getElementById('today-title').innerHTML=`${d.toLocaleDateString([],{weekday:'long'})} <em>${d.toLocaleDateString([],{month:'long',day:'numeric'})}</em>`;
   // populate capture project select
@@ -830,7 +858,22 @@ function renderAllTasks(){
   el.innerHTML=html;
 }
 
-function toggleTask(id){const t=tasks.find(x=>x.id===id);if(!t)return;t.done=!t.done;saveTasks();renderAllTasks();renderTodayView();}
+async function toggleTask(id){
+  const t=tasks.find(x=>x.id===id);if(!t)return;
+  t.done=!t.done;
+  saveTasks();renderAllTasks();renderTodayView();
+  // Sync to Google Tasks if applicable
+  if(t.googleId&&t.listId&&googleToken){
+    try{
+      await fetch(`https://tasks.googleapis.com/tasks/v1/lists/${t.listId}/tasks/${t.googleId}`,{
+        method:'PATCH',
+        headers:{Authorization:`Bearer ${googleToken}`,'Content-Type':'application/json'},
+        body:JSON.stringify({status:t.done?'completed':'needsAction'})
+      });
+      showToast(t.done?'Marked complete in Google ✓':'Reopened in Google ✓','ok');
+    }catch(e){console.error('Google sync error:',e);}
+  }
+}
 function deleteTask(id){tasks=tasks.filter(t=>t.id!==id);saveTasks();renderAllTasks();renderTodayView();if(window._currentDetailId)openDetail(window._currentDetailId);}
 function filterTasks(f,el){curTaskFilter=f;document.querySelectorAll('.tfilter').forEach(b=>b.classList.remove('active'));if(el)el.classList.add('active');renderAllTasks();}
 function openNewTaskModal(projectId){
