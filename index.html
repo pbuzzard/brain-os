@@ -863,7 +863,6 @@ async function toggleTask(id){
   const t=tasks.find(x=>x.id===id);if(!t)return;
   t.done=!t.done;
   saveTasks();renderAllTasks();renderTodayView();
-  // Sync to Google Tasks if applicable
   if(t.googleId&&t.listId&&googleToken){
     try{
       await fetch(`https://tasks.googleapis.com/tasks/v1/lists/${t.listId}/tasks/${t.googleId}`,{
