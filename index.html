@@ -264,18 +264,21 @@ body{font-family:var(--mono);background:var(--bg);color:var(--text);min-height:1
     <div class="nav-item" onclick="filterCat('creative',this)"><div class="dot dot-creative"></div>creative <span class="count" id="c-creative">0</span></div>
     <div class="sidebar-footer">
       <div>
-        <div class="cfg-label">Anthropic API Key</div>
-        <input type="password" class="sbi" id="s-api-key" placeholder="sk-ant-...">
-        <button class="sbtn" onclick="saveApiKey()">save key</button>
-        <div class="sstat" id="key-stat"></div>
+        <div class="cfg-label" onclick="toggleSection('api-section',this)" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center">Anthropic API Key <span id="api-section-arrow">▸</span></div>
+        <div id="api-section" style="display:none">
+          <input type="password" class="sbi" id="s-api-key" placeholder="sk-ant-...">
+          <button class="sbtn" onclick="saveApiKey()">save key</button>
+          <div class="sstat" id="key-stat"></div>
+        </div>
       </div>
       <div>
-        <div class="cfg-label gh">GitHub Sync</div>
-        <input type="text" class="sbi" id="s-gh-user" placeholder="GitHub username">
-        <input type="password" class="sbi" id="s-gh-token" placeholder="personal access token">
-        <button class="sbtn gh" onclick="saveGitHub()">save & connect</button>
-        <div class="sstat" id="gh-stat"></div>
-      </div>
+        <div class="cfg-label gh" onclick="toggleSection('gh-section',this)" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center">GitHub Sync <span id="gh-section-arrow" style="color:var(--gh-t)">▸</span></div>
+        <div id="gh-section" style="display:none">
+          <input type="text" class="sbi" id="s-gh-user" placeholder="GitHub username">
+          <input type="password" class="sbi" id="s-gh-token" placeholder="personal access token">
+          <button class="sbtn gh" onclick="saveGitHub()">save & connect</button>
+          <div class="sstat" id="gh-stat"></div>
+        </div>
       <div>
         <div class="cfg-label gcal">Google Calendar & Tasks</div>
         <div class="sstat" id="gcal-stat"></div>
@@ -306,7 +309,7 @@ body{font-family:var(--mono);background:var(--bg);color:var(--text);min-height:1
         </div>
         <div class="today-col">
           <h3>
-  <select id="task-list-selector" onchange="renderTodayTasks()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text2);font-family:var(--mono);font-size:12px;padding:3px 8px;border-radius:6px;outline:none;cursor:pointer;font-weight:300">
+  <select id="task-list-selector" onchange="renderTodayTasks()" style="background:none;border:none;color:var(--text);font-family:var(--serif);font-size:16px;padding:0;outline:none;cursor:pointer;font-weight:300;appearance:none;-webkit-appearance:none">
     <option value="today">due today</option>
   </select>
   <span id="tasks-today-count"></span>
@@ -1031,7 +1034,14 @@ function showToast(msg,type=''){const t=document.getElementById('toast');t.textC
 function markDirty(){if(!isDirty){isDirty=true;if(ghu()&&ght())setSyncState('dirty','unsaved changes');}}
 
 // ── Config ───────────────────────────────────────────────────────
-function saveApiKey(){const k=document.getElementById('s-api-key').value.trim();if(!k)return;localStorage.setItem('b_apikey',k);stat('key-stat','✓ saved','var(--tag-work-t)');}
+function toggleSection(id,labelEl){
+  const section=document.getElementById(id);
+  const isOpen=section.style.display!=='none';
+  section.style.display=isOpen?'none':'block';
+  const arrow=labelEl.querySelector('span');
+  if(arrow)arrow.textContent=isOpen?'▸':'▾';
+}
+  function saveApiKey(){const k=document.getElementById('s-api-key').value.trim();if(!k)return;localStorage.setItem('b_apikey',k);stat('key-stat','✓ saved','var(--tag-work-t)');}
 function saveApiKeyMobile(){const k=document.getElementById('m-api-key').value.trim();if(!k)return;localStorage.setItem('b_apikey',k);stat('m-key-stat','✓ saved','var(--tag-work-t)');}
 function saveGitHub(){const u=document.getElementById('s-gh-user').value.trim();const t=document.getElementById('s-gh-token').value.trim();if(!u||!t){stat('gh-stat','enter both fields','#bf9a30');return;}localStorage.setItem('b_ghuser',u);localStorage.setItem('b_ghtoken',t);stat('gh-stat','saved — syncing...','var(--text3)');syncFromGitHub(true);}
 function saveGitHubMobile(){const u=document.getElementById('m-gh-user').value.trim();const t=document.getElementById('m-gh-token').value.trim();if(!u||!t){stat('m-gh-stat','enter both fields','#bf9a30');return;}localStorage.setItem('b_ghuser',u);localStorage.setItem('b_ghtoken',t);stat('m-gh-stat','saved — syncing...','var(--text3)');syncFromGitHub(true);}
