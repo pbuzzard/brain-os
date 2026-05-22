@@ -644,6 +644,7 @@ renderTodayTasks();
   // populate capture project select
   document.getElementById('today-cap-proj').innerHTML='<option value="">— auto-detect —</option>'+projs.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
 }
+  }
 
 // ── Quick Capture (Today) ────────────────────────────────────────
 async function runTodayCapture(){
