@@ -413,7 +413,7 @@ body{font-family:var(--mono);background:var(--bg);color:var(--text);min-height:1
 </div>
 <div class="toast" id="toast"></div>
 <script>
-const API_URL="https://api.anthropic.com/v1/messages",MODEL="claude-sonnet-4-20250514";
+const API_URL="https://brain-os-proxy.pcbuzzard.workers.dev",MODEL="claude-sonnet-4-20250514";
 const WP_API="https://public-api.wordpress.com/rest/v1.1/sites/";
 const GH_API="https://api.github.com";
 const GH_REPO="brain-os",GH_FILE="data.json";
@@ -662,7 +662,7 @@ async function chat(id){
   mc.scrollTop=mc.scrollHeight;
   const ptasks=tasks.filter(t=>t.projectId===p.id&&!t.done).map(t=>t.text).join(', ');
   try{
-    const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json','x-api-key':k,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-api-access-insecure-unauthenticated-by-design-do-not-use-in-production':'true'},
+    const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01'},
       body:JSON.stringify({model:MODEL,max_tokens:1000,system:`You are a project assistant. PROJECT: ${p.name} | CAT: ${p.cat} | STATUS: ${p.status} | GOAL: ${p.goal} | WHERE LEFT OFF: ${p.notes||'none'} | NEXT STEPS: ${p.steps?.join('; ')||'none'} | OPEN TASKS: ${ptasks||'none'} | TAGS: ${p.tags.join(', ')} | UPDATED: ${p.updated}. Be concise and specific.`,messages:[{role:'user',content:txt}]})});
     const d=await r.json();
     am.innerHTML=(d.content?.[0]?.text||'no response').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
@@ -732,7 +732,7 @@ async function genDraft(p){
   const k=gk();
   if(!k){document.getElementById('wp-title').value=p.name;document.getElementById('wp-tags').value=p.tags.join(', ');document.getElementById('wp-content').value=`<h2>${p.goal}</h2>\n<p>${p.notes||''}</p>`;document.getElementById('wp-sub').textContent='No API key.';document.getElementById('wp-gen').style.display='none';document.getElementById('wp-fc').style.display='block';return;}
   try{
-    const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json','x-api-key':k,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-api-access-insecure-unauthenticated-by-design-do-not-use-in-production':'true'},
+    const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01'},
       body:JSON.stringify({model:MODEL,max_tokens:2000,system:`Transform a project into an engaging blog post in clean HTML. Use only <h2><h3><p><ul><li><strong><em><blockquote>. No divs/styles/classes. First person, 300-600 words. Return ONLY:\n<title>post title</title>\n<content>html body</content>`,messages:[{role:'user',content:`Project: ${p.name}\nGoal: ${p.goal}\nNotes: ${p.notes||'none'}\nNext Steps: ${p.steps?.join(', ')||'none'}\nTags: ${p.tags.join(', ')}\n\nWrite an engaging post.`}]})});
     const d=await r.json();const raw=d.content?.[0]?.text||'';
     document.getElementById('wp-title').value=(raw.match(/<title>(.*?)<\/title>/s)||[])[1]?.trim()||p.name;
@@ -765,7 +765,7 @@ async function runCapture(){
   const pid=document.getElementById('cap-proj').value;const lp=pid?projs.find(p=>p.id==pid):null;
   btn.disabled=true;btn.textContent='processing...';out.style.display='block';out.innerHTML='<span class="typing"></span>';
   try{
-    const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json','x-api-key':k,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-api-access-insecure-unauthenticated-by-design-do-not-use-in-production':'true'},
+    const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01'},
       body:JSON.stringify({model:MODEL,max_tokens:1000,system:`Extract structured info from raw notes. Return ONLY:\n<summary>2-3 sentences</summary>\n<decisions>bullets or "none"</decisions>\n<actions>bullets or "none"</actions>\n<questions>open questions or "none"</questions>\n<project_link>match to: ${projs.map(p=>p.name).join(', ')} — or "new project"</project_link>\n${lp?`Linked: "${lp.name}" — ${lp.goal}`:''}`,messages:[{role:'user',content:input}]})});
     const d=await r.json();const raw=d.content?.[0]?.text||'';
     const ex=tag=>(raw.match(new RegExp(`<${tag}>(.*?)<\\/${tag}>`,'s'))||[])[1]?.trim()||'';
