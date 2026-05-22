@@ -632,6 +632,7 @@ const tasksTodayList=document.getElementById('tasks-today-list');
   }
 }
 function renderTodayView(){
+  if(!document.getElementById('tasks-today-list'))return;
   const todayStr=localToday();
   const calList=document.getElementById('cal-list');
   const calCount=document.getElementById('cal-count');
