@@ -474,6 +474,27 @@ async function loadTasks(){
       (td.items||[]).forEach(t=>allTasks.push({...t,listId:list.id,listTitle:list.title}));
     }
     googleTasks=allTasks;
+    // Merge Google Tasks into brain.os tasks (avoid duplicates by googleId)
+    let added=0;
+    googleTasks.forEach(gt=>{
+      const alreadyExists=tasks.find(t=>t.googleId===gt.id);
+      if(!alreadyExists){
+        tasks.unshift({
+          id:Date.now()+Math.random(),
+          googleId:gt.id,
+          text:gt.title||'(untitled)',
+          done:false,
+          due:gt.due?gt.due.split('T')[0]:null,
+          projectId:null,
+          notes:gt.notes||'',
+          created:gt.updated?gt.updated.split('T')[0]:new Date().toISOString().split('T')[0],
+          fromGoogle:true,
+          listTitle:gt.listTitle
+        });
+        added++;
+      }
+    });
+    if(added>0){saveTasks();showToast(`Imported ${added} task${added>1?'s':''} from Google ✓`,'ok');}
   }catch(e){console.error('Tasks error:',e);}
 }
 function fmtCalTime(event){
