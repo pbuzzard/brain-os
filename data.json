@@ -1,0 +1,509 @@
+{
+  "projects": [
+    {
+      "id": 1,
+      "name": "2026 Hiking Season Plan",
+      "cat": "personal",
+      "status": "active",
+      "goal": "Map out 8 major hikes for the year, gear list, permits, training plan",
+      "tags": [
+        "outdoors",
+        "planning",
+        "fitness"
+      ],
+      "notes": "Humphreys Peak and Grand Canyon R2R on the list. Need to check permit windows.",
+      "steps": [
+        "Check Grand Canyon R2R permit dates",
+        "Research Kachina Trail conditions",
+        "Book Humphreys Peak campsite"
+      ],
+      "updated": "2026-05-12",
+      "wpId": null
+    },
+    {
+      "id": 2,
+      "name": "Client Proposal — Watershed Restoration",
+      "cat": "work",
+      "status": "active",
+      "goal": "Write and submit full proposal for Coconino County watershed project",
+      "tags": [
+        "writing",
+        "proposal",
+        "environmental"
+      ],
+      "notes": "Have the site survey data. Need exec summary and budget section.",
+      "steps": [
+        "Draft executive summary",
+        "Pull budget template from Verde River proposal",
+        "Review county submission requirements"
+      ],
+      "updated": "2026-05-15",
+      "wpId": null
+    },
+    {
+      "id": 3,
+      "name": "Short Story: 'The Cartographer'",
+      "cat": "creative",
+      "status": "paused",
+      "goal": "Finish first draft of a short story about a map-maker in the 1800s Southwest",
+      "tags": [
+        "fiction",
+        "writing",
+        "southwest"
+      ],
+      "notes": "First 3 scenes done. Stuck on the midpoint.",
+      "steps": [
+        "Resolve midpoint motivation",
+        "Research 1880s Arizona cartography",
+        "Write scenes 4-5"
+      ],
+      "updated": "2026-03-08",
+      "wpId": null
+    },
+    {
+      "id": 4,
+      "name": "Home Office Refresh",
+      "cat": "personal",
+      "status": "paused",
+      "goal": "Reorganize workspace for better focus",
+      "tags": [
+        "home",
+        "focus",
+        "diy"
+      ],
+      "notes": "Decided on a standing desk converter. Still researching monitor arms.",
+      "steps": [
+        "Order standing desk converter",
+        "Measure wall for shelving",
+        "Pick up grow light"
+      ],
+      "updated": "2026-04-20",
+      "wpId": null
+    },
+    {
+      "id": 5,
+      "name": "Field Notes Series",
+      "cat": "creative",
+      "status": "active",
+      "goal": "Illustrated field-note essays about the Colorado Plateau",
+      "tags": [
+        "writing",
+        "nonfiction",
+        "southwest",
+        "nature"
+      ],
+      "notes": "Three essays drafted. Need a home for this.",
+      "steps": [
+        "Draft essay 4: Monument Valley",
+        "Research Terrain and High Desert Journal",
+        "Commission maps"
+      ],
+      "updated": "2026-05-17",
+      "wpId": null
+    }
+  ],
+  "tasks": [
+    {
+      "id": 1779412256367,
+      "text": "test task",
+      "done": true,
+      "due": "2026-05-21",
+      "projectId": null,
+      "notes": "",
+      "created": "2026-05-22"
+    },
+    {
+      "id": 1779412115199.0244,
+      "googleId": "YU1HZzMyZ2RiOUpYOWdYdA",
+      "text": "April quilt squares",
+      "done": false,
+      "due": null,
+      "projectId": null,
+      "notes": "",
+      "created": "2026-05-22",
+      "fromGoogle": true,
+      "listTitle": "Craft projects"
+    },
+    {
+      "id": 1779412115199.967,
+      "googleId": "UHNxbXUwQ0U4VE5UNS1zYw",
+      "text": "May quilt squares",
+      "done": false,
+      "due": null,
+      "projectId": null,
+      "notes": "",
+      "created": "2026-05-22",
+      "fromGoogle": true,
+      "listTitle": "Craft projects"
+    },
+    {
+      "id": 1779412115199.8433,
+      "googleId": "OXo0QnBwOU92NU5iRUN0TA",
+      "text": "Sell extra girl scout stuff",
+      "done": false,
+      "due": null,
+      "projectId": null,
+      "notes": "",
+      "created": "2026-05-22",
+      "fromGoogle": true,
+      "listTitle": "Summer projects"
+    },
+    {
+      "id": 1779412115199.1978,
+      "googleId": "X0pwQWVKWW5ZQ2MxVFl6WQ",
+      "text": "Organize craft room",
+      "done": false,
+      "due": null,
+      "projectId": null,
+      "notes": "",
+      "created": "2026-05-22",
+      "fromGoogle": true,
+      "listTitle": "Summer projects"
+    },
+    {
+      "id": 1779412115199.21,
+      "googleId": "am1mS25JNjNoOTBMQUVJUw",
+      "text": "Start organizing garage",
+      "done": false,
+      "due": null,
+      "projectId": null,
+      "notes": "",
+      "created": "2026-05-22",
+      "fromGoogle": true,
+      "listTitle": "Summer projects"
+    },
+    {
+      "id": 1779412115199.1675,
+      "googleId": "QVdkNE1wM1Rfb0dqOTllVQ",
+      "text": "Come up with house tasks that I can pay the kids to do",
+      "done": false,
+      "due": null,
+      "projectId": null,
+      "notes": "",
+      "created": "2026-05-22",
+      "fromGoogle": true,
+      "listTitle": "Summer projects"
+    },
+    {
+      "id": 1779412115199.9048,
+      "googleId": "U09TQmFXRngzQmlETzJFLQ",
+      "text": "Replace burned out bulbs",
+      "done": false,
+      "due": null,
+      "projectId": null,
+      "notes": "",
+      "created": "2026-05-22",
+      "fromGoogle": true,
+      "listTitle": "Summer projects"
+    },
+    {
+      "id": 1779412115199.3572,
+      "googleId": "RC16NDBaQVRsQXY4Q0x4SQ",
+      "text": "Organize under stairs",
+      "done": false,
+      "due": null,
+      "projectId": null,
+      "notes": "",
+      "created": "2026-05-22",
+      "fromGoogle": true,
+      "listTitle": "Summer projects"
+    },
+    {
+      "id": 1779412115199.5422,
+      "googleId": "bGgwZ2gwSHNlMF9iUFpUUQ",
+      "text": "Move nail stuff out of living room",
+      "done": false,
+      "due": null,
+      "projectId": null,
+      "notes": "",
+      "created": "2026-05-22",
+      "fromGoogle": true,
+      "listTitle": "Summer projects"
+    },
+    {
+      "id": 1779412115199.7227,
+      "googleId": "OENGYWdHdlZaNjJDNTlUag",
+      "text": "Consolidate stuff for goodwill",
+      "done": false,
+      "due": null,
+      "projectId": null,
+      "notes": "",
+      "created": "2026-05-22",
+      "fromGoogle": true,
+      "listTitle": "Summer projects"
+    },
+    {
+      "id": 1779412115199.7214,
+      "googleId": "N3pYQUVTcUU4V2JrMzBsdQ",
+      "text": "Goodwill trip",
+      "done": false,
+      "due": null,
+      "projectId": null,
+      "notes": "",
+      "created": "2026-05-22",
+      "fromGoogle": true,
+      "listTitle": "Summer projects"
+    },
+    {
+      "id": 1779412115199.0647,
+      "googleId": "bS1mbDhtbG1PTzdzZE01UA",
+      "text": "Ari's art exchange drop off",
+      "done": false,
+      "due": null,
+      "projectId": null,
+      "notes": "",
+      "created": "2026-05-22",
+      "fromGoogle": true,
+      "listTitle": "Summer projects"
+    },
+    {
+      "id": 1779412115199.6821,
+      "googleId": "S1FkS1RnYkJsSjAxT01Baw",
+      "text": "What do I need to do to get rid of dryer?",
+      "done": false,
+      "due": null,
+      "projectId": null,
+      "notes": "",
+      "created": "2026-05-22",
+      "fromGoogle": true,
+      "listTitle": "Summer projects"
+    },
+    {
+      "id": 1779412115199.0415,
+      "googleId": "eGxBRk05YnNFQVBvam9kVQ",
+      "text": "Scan notebook pages to put in 2nd brain",
+      "done": false,
+      "due": null,
+      "projectId": null,
+      "notes": "",
+      "created": "2026-05-22",
+      "fromGoogle": true,
+      "listTitle": "Summer projects"
+    },
+    {
+      "id": 1779412115199.1282,
+      "googleId": "RkpobTJIX0wwd2tSWDB5dg",
+      "text": "Weed garden",
+      "done": false,
+      "due": null,
+      "projectId": null,
+      "notes": "",
+      "created": "2026-05-22",
+      "fromGoogle": true,
+      "listTitle": "House projects"
+    },
+    {
+      "id": 1779412115199.738,
+      "googleId": "OTJGUk1TX2tINm02Mk1fag",
+      "text": "Lay down cardboard",
+      "done": false,
+      "due": null,
+      "projectId": null,
+      "notes": "",
+      "created": "2026-05-22",
+      "fromGoogle": true,
+      "listTitle": "House projects"
+    },
+    {
+      "id": 1779412115199.7566,
+      "googleId": "LTBEbUlxN0FzS252QjVPVg",
+      "text": "Plant starts",
+      "done": false,
+      "due": null,
+      "projectId": null,
+      "notes": "",
+      "created": "2026-05-22",
+      "fromGoogle": true,
+      "listTitle": "House projects"
+    },
+    {
+      "id": 1779412115199.4607,
+      "googleId": "M3hlTFdZT2pPeGxUbmdjWA",
+      "text": "Lay out watering tubing",
+      "done": false,
+      "due": null,
+      "projectId": null,
+      "notes": "",
+      "created": "2026-05-22",
+      "fromGoogle": true,
+      "listTitle": "House projects"
+    },
+    {
+      "id": 1779412115199.7725,
+      "googleId": "RjRrN2VQVEVneE9KOHdnVA",
+      "text": "Plant whatever seeds can still be planted",
+      "done": false,
+      "due": null,
+      "projectId": null,
+      "notes": "",
+      "created": "2026-05-22",
+      "fromGoogle": true,
+      "listTitle": "House projects"
+    },
+    {
+      "id": 1779412115199.6533,
+      "googleId": "QkVlWlRHZUxDdXhOb2xROA",
+      "text": "Reply to girl scout email",
+      "done": false,
+      "due": null,
+      "projectId": null,
+      "notes": "",
+      "created": "2026-05-22",
+      "fromGoogle": true,
+      "listTitle": "My Tasks"
+    },
+    {
+      "id": 1779412115199.2717,
+      "googleId": "TnQtWDlBSzZ6Q3RhcmdVVg",
+      "text": "Girl scout deposit",
+      "done": false,
+      "due": null,
+      "projectId": null,
+      "notes": "",
+      "created": "2026-05-22",
+      "fromGoogle": true,
+      "listTitle": "My Tasks"
+    },
+    {
+      "id": 1779412115199.2214,
+      "googleId": "Nm1pNVJPa2N3aTI4NUUtNw",
+      "text": "Email Nikki koeb about replacing medieval times tickets",
+      "done": false,
+      "due": null,
+      "projectId": null,
+      "notes": "",
+      "created": "2026-05-22",
+      "fromGoogle": true,
+      "listTitle": "My Tasks"
+    },
+    {
+      "id": 1779412115199.1633,
+      "googleId": "SGh6UGxHTFlvSm5CRU45OA",
+      "text": "Reschedule the PT appt on the 26th",
+      "done": false,
+      "due": null,
+      "projectId": null,
+      "notes": "",
+      "created": "2026-05-22",
+      "fromGoogle": true,
+      "listTitle": "My Tasks"
+    },
+    {
+      "id": 1779412115199.1536,
+      "googleId": "TklYd3Q5VExXTEM2eDJiUg",
+      "text": "Find amount in email",
+      "done": false,
+      "due": null,
+      "projectId": null,
+      "notes": "",
+      "created": "2026-05-22",
+      "fromGoogle": true,
+      "listTitle": "My Tasks"
+    },
+    {
+      "id": 1779412115199.6238,
+      "googleId": "OU9xa01ja1pJTDAzQU1GZg",
+      "text": "Return items to Michael's",
+      "done": false,
+      "due": null,
+      "projectId": null,
+      "notes": "",
+      "created": "2026-05-22",
+      "fromGoogle": true,
+      "listTitle": "My Tasks"
+    },
+    {
+      "id": 1779412115199.603,
+      "googleId": "N3I4LWxGVHZGODJ4dUowVQ",
+      "text": "Email poppy hive about quilt squares",
+      "done": false,
+      "due": null,
+      "projectId": null,
+      "notes": "",
+      "created": "2026-05-22",
+      "fromGoogle": true,
+      "listTitle": "My Tasks"
+    },
+    {
+      "id": 1779412115199.9417,
+      "googleId": "TVhkdmF3MzBMd1RwSFpDUg",
+      "text": "Set up auto transfer of chore money for kids",
+      "done": false,
+      "due": null,
+      "projectId": null,
+      "notes": "",
+      "created": "2026-05-22",
+      "fromGoogle": true,
+      "listTitle": "My Tasks"
+    },
+    {
+      "id": 1779412115199.9768,
+      "googleId": "bV9wQVo1VGZ2VmhxdWRmNw",
+      "text": "Pick up gift for Samantha",
+      "done": false,
+      "due": null,
+      "projectId": null,
+      "notes": "",
+      "created": "2026-05-22",
+      "fromGoogle": true,
+      "listTitle": "My Tasks"
+    },
+    {
+      "id": 1779412115199.8684,
+      "googleId": "ZU1kWjRkYUZneldOcFJwYw",
+      "text": "Check calendar and RSVP for June bunco",
+      "done": false,
+      "due": null,
+      "projectId": null,
+      "notes": "",
+      "created": "2026-05-22",
+      "fromGoogle": true,
+      "listTitle": "My Tasks"
+    },
+    {
+      "id": 1779412115198.0566,
+      "googleId": "OV8yUlVNbi1PLVlDNWxfNQ",
+      "text": "Order cookies",
+      "done": false,
+      "due": "2026-05-18",
+      "projectId": null,
+      "notes": "",
+      "created": "2026-05-22",
+      "fromGoogle": true,
+      "listTitle": "My Tasks"
+    },
+    {
+      "id": 1779412115198.9502,
+      "googleId": "OFhsd2xuVWFKcGpUVnJwTQ",
+      "text": "Meal plan setup",
+      "done": false,
+      "due": null,
+      "projectId": null,
+      "notes": "",
+      "created": "2026-05-22",
+      "fromGoogle": true,
+      "listTitle": "My Tasks"
+    },
+    {
+      "id": 1779412115198.9333,
+      "googleId": "TDNuSFJrMHhBcHFkZlUzdg",
+      "text": "Water plants",
+      "done": false,
+      "due": "2026-05-20",
+      "projectId": null,
+      "notes": "",
+      "created": "2026-05-22",
+      "fromGoogle": true,
+      "listTitle": "My Tasks"
+    }
+  ],
+  "inbox": [
+    {
+      "id": 1779417973988,
+      "type": "idea",
+      "raw": "test test test test test",
+      "summary": "test test test test test",
+      "timestamp": "2026-05-22T02:46:13.988Z"
+    }
+  ]
+}
