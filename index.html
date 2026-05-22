@@ -526,7 +526,8 @@ let curFilter='all',curSearch='';
 function save(dirty=true){localStorage.setItem('b_projs',JSON.stringify(projs));if(dirty)markDirty();}
 function saveTasks(dirty=true){localStorage.setItem('b_tasks',JSON.stringify(tasks));if(dirty)markDirty();}
 function renderTodayView(){
-  const todayStr=new Date().toISOString().split('T')[0];
+  const now=new Date();
+const todayStr=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
   const calList=document.getElementById('cal-list');
   const calCount=document.getElementById('cal-count');
   if(!googleToken){calList.innerHTML='<div class="empty-msg">Connect Google to see your calendar</div>';calCount.textContent='';}
