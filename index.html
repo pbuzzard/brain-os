@@ -631,7 +631,13 @@ function openDetail(id){
   const ptasks=tasks.filter(t=>t.projectId===p.id);
   document.getElementById('dc').innerHTML=`
     <div class="dtop"><div><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap"><span class="tag tag-${p.cat}">${p.cat}</span><div class="sdot s-${p.status}"></div><span style="font-size:11px;color:var(--text3)">${p.status}</span></div><div class="view-title">${p.name}</div></div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button class="ibtn" onclick="openChat(${p.id})">ask ai</button><button class="ibtn" onclick="openNewTaskModal(${p.id})" style="border-color:var(--accent);color:var(--accent)">+ task</button>${wpOk?`<button class="ibtn wp" onclick="openWpModal(${p.id})">→ wp</button>`:''}</div></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+  <button class="ibtn" onclick="openChat(${p.id})">ask ai</button>
+  <button class="ibtn" onclick="openNewTaskModal(${p.id})" style="border-color:var(--accent);color:var(--accent)">+ task</button>
+  ${wpOk?`<button class="ibtn wp" onclick="openWpModal(${p.id})">→ wp</button>`:''}
+  <button class="ibtn" onclick="archiveProject(${p.id})" style="border-color:var(--text3);color:var(--text3)">archive</button>
+  <button class="ibtn" onclick="deleteProject(${p.id})" style="border-color:#bf3a3a;color:#bf3a3a">delete</button>
+</div>
     <div class="dgrid">
       <div class="iblock"><h4>goal</h4><p>${p.goal}</p></div>
       <div class="iblock"><h4>where you left off</h4><p>${p.notes||'No notes yet.'}</p></div>
