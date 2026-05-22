@@ -635,10 +635,9 @@ function renderTodayView(){
   if(!document.getElementById('tasks-today-list'))return;
   const todayStr=localToday();
   const calList=document.getElementById('cal-list');
-  const calCount=document.getElementById('cal-count');
-  if(!googleToken){calList.innerHTML='<div class="empty-msg">Connect Google to see your calendar</div>';calCount.textContent='';}
-  else if(calendarEvents.length===0){calList.innerHTML='<div class="empty-msg">No events today 🎉</div>';calCount.textContent='';}
-  else{calCount.textContent=calendarEvents.length;calList.innerHTML=calendarEvents.map(e=>`<div class="event-item"><div class="event-time">${fmtCalTime(e)}</div><div class="event-title">${e.summary||'(no title)'}</div>${e.location?`<div class="event-cal">${e.location}</div>`:''}</div>`).join('');}
+  if(!googleToken){calList.innerHTML='<div class="empty-msg">Connect Google to see your calendar</div>';}
+  else if(calendarEvents.length===0){calList.innerHTML='<div class="empty-msg">No events today 🎉</div>';}
+  elsecalList.innerHTML=calendarEvents.map(e=>`<div class="event-item"><div class="event-time">${fmtCalTime(e)}</div><div class="event-title">${e.summary||'(no title)'}</div>${e.location?`<div class="event-cal">${e.location}</div>`:''}</div>`).join('');}
 renderTodayTasks();
   const d=new Date();
   document.getElementById('today-title').innerHTML=`${d.toLocaleDateString([],{weekday:'long'})} <em>${d.toLocaleDateString([],{month:'long',day:'numeric'})}</em>`;
