@@ -523,6 +523,67 @@ body{font-family:var(--mono);background:var(--bg);color:var(--text);min-height:1
       <button class="wpbtn" id="wp-send" onclick="publishDraft()">→ send draft</button>
     </div>
   </div>
+  <div id="view-templates" class="view" style="display:none;padding:16px;overflow-y:auto;height:100%;">
+  <!-- Tab switcher -->
+  <div style="display:flex;gap:8px;margin-bottom:20px;">
+    <button id="tmpl-tab-weekly" onclick="switchTemplate('weekly')"
+      style="flex:1;padding:8px;background:var(--accent);color:#0e0e0e;border:none;border-radius:8px;font-family:var(--mono);font-size:12px;cursor:pointer;font-weight:500;">
+      family weekly flow
+    </button>
+    <button id="tmpl-tab-meal" onclick="switchTemplate('meal')"
+      style="flex:1;padding:8px;background:none;border:1px solid var(--border2);color:var(--text2);border-radius:8px;font-family:var(--mono);font-size:12px;cursor:pointer;">
+      meal planner
+    </button>
+  </div>
+  <!-- ── FAMILY WEEKLY FLOW ── -->
+  <div id="tmpl-weekly">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <h3 style="font-size:14px;font-weight:400;color:var(--text);">family weekly flow</h3>
+      <div style="display:flex;gap:6px;">
+        <button onclick="printTemplate('weekly')" style="font-size:11px;padding:4px 10px;background:none;border:1px solid var(--border2);color:var(--text2);border-radius:6px;font-family:var(--mono);cursor:pointer;">print</button>
+        <button onclick="clearTemplate('weekly')" style="font-size:11px;padding:4px 10px;background:none;border:1px solid var(--border2);color:var(--text2);border-radius:6px;font-family:var(--mono);cursor:pointer;">clear</button>
+        <button onclick="saveTemplates()" style="font-size:11px;padding:4px 10px;background:var(--accent2);color:#0e0e0e;border:none;border-radius:6px;font-family:var(--mono);cursor:pointer;">save</button>
+      </div>
+    </div>
+    <!-- Week label -->
+    <div style="margin-bottom:12px;">
+      <input id="weekly-week-label" type="text" placeholder="week of — e.g. june 30"
+        style="width:100%;padding:6px 10px;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:6px;font-family:var(--mono);font-size:12px;" />
+    </div>
+    <!-- People color legend -->
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;" id="weekly-people-row">
+      <span style="font-size:10px;color:var(--text3);align-self:center;">people:</span>
+      <input id="person1" type="text" placeholder="person 1" style="width:90px;padding:4px 8px;background:var(--surface2);border:1px solid #7a9e8a;color:#7a9e8a;border-radius:5px;font-family:var(--mono);font-size:11px;" />
+      <input id="person2" type="text" placeholder="person 2" style="width:90px;padding:4px 8px;background:var(--surface2);border:1px solid #7ab0f5;color:#7ab0f5;border-radius:5px;font-family:var(--mono);font-size:11px;" />
+      <input id="person3" type="text" placeholder="person 3" style="width:90px;padding:4px 8px;background:var(--surface2);border:1px solid #bf9a7a;color:#bf9a7a;border-radius:5px;font-family:var(--mono);font-size:11px;" />
+      <input id="person4" type="text" placeholder="person 4" style="width:90px;padding:4px 8px;background:var(--surface2);border:1px solid #9a7abf;color:#9a7abf;border-radius:5px;font-family:var(--mono);font-size:11px;" />
+    </div>
+    <!-- Weekly grid — one row per day -->
+    <div id="weekly-grid" style="display:flex;flex-direction:column;gap:8px;"></div>
+  </div>
+  <!-- ── MEAL PLANNER ── -->
+  <div id="tmpl-meal" style="display:none;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <h3 style="font-size:14px;font-weight:400;color:var(--text);">meal planner</h3>
+      <div style="display:flex;gap:6px;">
+        <button onclick="printTemplate('meal')" style="font-size:11px;padding:4px 10px;background:none;border:1px solid var(--border2);color:var(--text2);border-radius:6px;font-family:var(--mono);cursor:pointer;">print</button>
+        <button onclick="clearTemplate('meal')" style="font-size:11px;padding:4px 10px;background:none;border:1px solid var(--border2);color:var(--text2);border-radius:6px;font-family:var(--mono);cursor:pointer;">clear</button>
+        <button onclick="saveTemplates()" style="font-size:11px;padding:4px 10px;background:var(--accent2);color:#0e0e0e;border:none;border-radius:6px;font-family:var(--mono);cursor:pointer;">save</button>
+      </div>
+    </div>
+    <div style="margin-bottom:12px;">
+      <input id="meal-week-label" type="text" placeholder="week of — e.g. june 30"
+        style="width:100%;padding:6px 10px;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:6px;font-family:var(--mono);font-size:12px;" />
+    </div>
+    <!-- Notes / pantry -->
+    <div style="margin-bottom:12px;">
+      <textarea id="meal-notes" rows="2" placeholder="pantry notes, dietary notes, or what needs using up..."
+        style="width:100%;padding:6px 10px;background:var(--surface2);border:1px solid var(--border);color:var(--text2);border-radius:6px;font-family:var(--mono);font-size:11px;resize:vertical;"></textarea>
+    </div>
+    <!-- Meal grid -->
+    <div id="meal-grid" style="display:flex;flex-direction:column;gap:6px;"></div>
+  </div>
+</div><!-- end view-templates -->
 </div>
 
 <div class="toast" id="toast"></div>
