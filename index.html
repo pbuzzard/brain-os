@@ -299,6 +299,53 @@ body{font-family:var(--mono);background:var(--bg);color:var(--text);min-height:1
     <!-- TODAY VIEW -->
     <div class="view active" id="view-today">
       <div class="view-header">
+        <div id="energy-planner" style="margin-bottom:20px;">
+  <!-- Energy selector -->
+  <div style="display:flex;gap:8px;margin-bottom:12px;">
+    <button id="ebtn-high" class="energy-btn" onclick="setEnergy('high')" style="flex:1;padding:8px 4px;background:none;border:1px solid var(--border2);color:var(--text2);border-radius:8px;font-family:var(--mono);font-size:11px;cursor:pointer;">⚡ high</button>
+    <button id="ebtn-low"  class="energy-btn" onclick="setEnergy('low')"  style="flex:1;padding:8px 4px;background:none;border:1px solid var(--border2);color:var(--text2);border-radius:8px;font-family:var(--mono);font-size:11px;cursor:pointer;">🌤 low</button>
+    <button id="ebtn-off"  class="energy-btn" onclick="setEnergy('off')"  style="flex:1;padding:8px 4px;background:none;border:1px solid var(--border2);color:var(--text2);border-radius:8px;font-family:var(--mono);font-size:11px;cursor:pointer;">🌧 off day</button>
+  </div>
+  <div id="energy-hint" style="font-size:11px;color:var(--text3);margin-bottom:14px;padding:6px 10px;border:1px solid var(--border);border-radius:6px;display:none;"></div>
+  <!-- Task formula slots -->
+  <div id="planner-slots" style="display:none;">
+    <!-- Daily x3 -->
+    <div style="margin-bottom:10px;">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:5px;">
+        <span style="width:8px;height:8px;border-radius:50%;background:#7a9e8a;display:inline-block;flex-shrink:0;"></span>
+        <span style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);">daily</span>
+        <span id="daily-count" style="font-size:10px;color:var(--text3);margin-left:auto;">0/3</span>
+      </div>
+      <div id="planner-daily"></div>
+    </div>
+    <!-- Weekly x2 -->
+    <div style="margin-bottom:10px;">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:5px;">
+        <span style="width:8px;height:8px;border-radius:50%;background:#7ab0f5;display:inline-block;flex-shrink:0;"></span>
+        <span style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);">weekly</span>
+        <span id="weekly-count" style="font-size:10px;color:var(--text3);margin-left:auto;">0/2</span>
+      </div>
+      <div id="planner-weekly"></div>
+    </div>
+    <!-- Monthly x1 -->
+    <div style="margin-bottom:10px;">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:5px;">
+        <span style="width:8px;height:8px;border-radius:50%;background:#bf9a7a;display:inline-block;flex-shrink:0;"></span>
+        <span style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);">monthly</span>
+        <span id="monthly-count" style="font-size:10px;color:var(--text3);margin-left:auto;">0/1</span>
+      </div>
+      <div id="planner-monthly"></div>
+    </div>
+    <!-- Extra x1 -->
+    <div style="margin-bottom:4px;">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:5px;">
+        <span style="width:8px;height:8px;border-radius:50%;background:#9a7abf;display:inline-block;flex-shrink:0;"></span>
+        <span style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);">extra</span>
+      </div>
+      <div id="planner-extra"></div>
+    </div>
+  </div>
+</div>
         <div class="view-title" id="today-title">Today</div>
         <button class="gcal-btn" onclick="loadGoogleData()" style="font-size:11px;padding:6px 14px">↺ refresh</button>
       </div>
